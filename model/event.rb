@@ -7,9 +7,11 @@ module MeteorTracker
     
     validates :time, :ra, :dec, :dir, presence: true
     validates :dir, inclusion: DIRS
+    validates :shower, presence: true, if: :shower_id?
     
     attr_accessible :time, :ra, :dec, :dir, :len, :mag, :vel, :shower_id, :user_id
     
+    belongs_to :shower
     belongs_to :user
   end
 end

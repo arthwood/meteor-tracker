@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150706174808) do
+ActiveRecord::Schema.define(version: 20150706180122) do
 
   create_table "events", force: :cascade do |t|
     t.datetime "time",                                 null: false
@@ -27,6 +27,12 @@ ActiveRecord::Schema.define(version: 20150706174808) do
 
   add_index "events", ["shower_id"], name: "index_events_on_shower_id", using: :btree
   add_index "events", ["user_id"], name: "index_events_on_user_id", using: :btree
+
+  create_table "showers", force: :cascade do |t|
+    t.string "name", limit: 255, null: false
+  end
+
+  add_index "showers", ["name"], name: "index_showers_on_name", unique: true, using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string "login",         limit: 255

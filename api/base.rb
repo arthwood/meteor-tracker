@@ -1,5 +1,6 @@
 require 'grape'
 require_relative '../model/event'
+require_relative '../model/shower'
 require_relative '../model/user'
 
 module MeteorTracker
@@ -7,6 +8,12 @@ module MeteorTracker
     version 'v1', using: :header, vendor: 'meteor_tracker'
     format :json
     prefix :api
+    
+    resource :showers do
+      get do
+        Shower.all
+      end
+    end
     
     resource :reports do
       http_basic do |login, password|
@@ -22,8 +29,8 @@ module MeteorTracker
         end
         requires :dir, type: String, desc: 'Direction', values: Event::DIRS
         optional :len, type: Integer, desc: 'Arc length'
-        optional :mag, type: Numeric, desc: 'Brightness'
-        optional :vel, type: Numeric, desc: 'Velocity'
+        optional :mag, type: Float, desc: 'Brightness'
+        optional :vel, type: Float, desc: 'Velocity'
         optional :shower_id, type: Integer, desc: 'Shower ID'
       end
       post do
