@@ -5,6 +5,7 @@ module MeteorTracker
     include BCrypt
     
     validates :login, :password_hash, :role, presence: true
+    validates :login, uniqueness: true
     
     has_many :events
     

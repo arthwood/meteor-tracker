@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150705220057) do
+ActiveRecord::Schema.define(version: 20150706174808) do
 
   create_table "events", force: :cascade do |t|
     t.datetime "time",                                 null: false
@@ -33,5 +33,7 @@ ActiveRecord::Schema.define(version: 20150705220057) do
     t.string "password_hash", limit: 255
     t.string "role",          limit: 255
   end
+
+  add_index "users", ["login"], name: "index_users_on_login", unique: true, using: :btree
 
 end
