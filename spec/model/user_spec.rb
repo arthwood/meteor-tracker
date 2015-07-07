@@ -54,4 +54,20 @@ describe MeteorTracker::User do
       expect(subject.errors.keys).to_not include(:role)
     end
   end
+  
+  describe '.authenticate' do
+    let!(:user) { create(:user) }
+    
+    context 'valid credentials' do
+      it 'should return user' do
+        expect(described_class.authenticate(user.login, 'asdf1234')).to eq(user)
+      end
+    end
+    
+    context 'invalid credentials' do
+      it 'should return nil' do
+        expect(described_class.authenticate(user.login, 'bad password')).to be_nil
+      end
+    end
+  end
 end
