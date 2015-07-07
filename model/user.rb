@@ -6,6 +6,7 @@ module MeteorTracker
     
     validates :login, :password_hash, :role, presence: true
     validates :login, uniqueness: true
+    validates :role, inclusion: %w(user admin)
     
     has_many :events
     
