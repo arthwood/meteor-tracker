@@ -1,4 +1,5 @@
 require 'bcrypt'
+require_relative 'event'
 
 module MeteorTracker
   class User < ActiveRecord::Base
