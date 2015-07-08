@@ -35,8 +35,62 @@ describe MeteorTracker::API do
     end
   end
   
+  describe 'POST showers' do
+    context 'as guest' do
+      it 'should fail' do
+        post '/api/showers'
+        
+        expect(last_response.status).to eq(401)
+      end
+    end
+    
+    context 'as user' do
+      let!(:user) { create(:user) }
+      let(:env) do
+        {HTTP_AUTHORIZATION: simple_auth(user.login, attributes_for(:user)[:user])}.as_json
+      end
+      
+      it 'should fail' do
+        post '/api/showers', nil, env
+        
+        expect(last_response.status).to eq(401)
+      end
+    end
+    
+    context 'as admin' do
+      let!(:admin) { create(:admin) }
+      let(:env) do
+        {HTTP_AUTHORIZATION: simple_auth(admin.login, attributes_for(:admin)[:password])}.as_json
+      end
+      
+      context 'invalid data' do
+        it 'should fail' do
+          post '/api/showers', nil, env
+          
+          expect(last_response.status).to eq(400)
+        end
+      end
+      
+      context 'valid data' do
+        let(:data) do
+          {
+            name: 'Unicornids'
+          }
+        end
+        
+        it 'should create shower entry' do
+          post '/api/showers', data, env
+          
+          expect(last_response.status).to eq(201)
+          expect(MeteorTracker::Shower.count).to eq(1)
+          expect(MeteorTracker::Shower.first.name).to eq(data[:name])
+        end
+      end
+    end
+  end
+  
   describe 'POST report' do
-    context 'unauthorized' do
+    context 'as guest' do
       it 'should fail' do
         post '/api/reports'
         
@@ -44,7 +98,7 @@ describe MeteorTracker::API do
       end
     end
     
-    context 'autorized' do
+    context 'as user' do
       let!(:user) { create(:user) }
       let(:env) do
         {HTTP_AUTHORIZATION: simple_auth(user.login, attributes_for(:user)[:password])}.as_json
@@ -53,7 +107,7 @@ describe MeteorTracker::API do
       context 'invalid data' do
         it 'should fail' do
           post '/api/reports', nil, env
-          
+ 
           expect(last_response.status).to eq(400)
         end
       end

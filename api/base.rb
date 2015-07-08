@@ -15,6 +15,24 @@ module MeteorTracker
       end
     end
     
+    resource :showers do
+      http_basic do |login, password|
+        @current_user = User.authenticate(login, password, :admin)
+      end
+      
+      desc 'Creates new meteor shower definition'
+      params do
+        requires :name, type: String, desc: 'Name'
+      end
+      post do
+        data = declared(params)
+        
+        resource = Shower.create(data)
+        
+        resource.valid? ? resource.id : nil
+      end
+    end
+    
     resource :reports do
       http_basic do |login, password|
         @current_user = User.authenticate(login, password)
@@ -35,9 +53,9 @@ module MeteorTracker
       end
       post do
         data = declared(params)
-        event = @current_user.events.create(data.merge(data.delete(:coords)))
+        resource = @current_user.events.create(data.merge(data.delete(:coords)))
         
-        event.valid? ? event.id : nil
+        resource.valid? ? resource.id : nil
       end
     end
   end
