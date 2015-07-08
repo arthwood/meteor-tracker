@@ -64,6 +64,18 @@ describe MeteorTracker::User do
       it 'should return user' do
         expect(described_class.authenticate(user.login, pass)).to eq(user)
       end
+      
+      context 'invalid role' do
+        it 'should return nil' do
+          expect(described_class.authenticate(user.login, pass, :admin)).to be_nil
+        end
+      end
+      
+      context 'valid role' do
+        it 'should return user' do
+          expect(described_class.authenticate(user.login, pass, :user)).to eq(user)
+        end
+      end
     end
     
     context 'invalid credentials' do

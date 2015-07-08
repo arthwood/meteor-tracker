@@ -20,10 +20,10 @@ module MeteorTracker
       self.password_hash = @password
     end
     
-    def self.authenticate(login, password)
+    def self.authenticate(login, password, role = nil)
       user = where(login: login).first
       
-      user.present? && user.password == password ? user : nil
+      user.present? && user.password == password && (role.nil? || user.role == role.to_s) ? user : nil
     end
   end
 end
