@@ -5,6 +5,7 @@ ENV['mode'] = 'test'
 
 require_relative '../app'
 require_relative 'support/factory_girl'
+require_relative 'factories/event'
 require_relative 'factories/shower'
 require_relative 'factories/user'
 
