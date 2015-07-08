@@ -2,7 +2,7 @@ require 'bcrypt'
 require_relative 'event'
 
 module MeteorTracker
-  class User < ActiveRecord::Base
+  class Model::User < ActiveRecord::Base
     include BCrypt
     
     validates :login, :password_hash, :role, presence: true

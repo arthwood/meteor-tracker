@@ -1,5 +1,5 @@
 module MeteorTracker
-  class Shower < ActiveRecord::Base
+  class Model::Shower < ActiveRecord::Base
     validates :name, presence: true, uniqueness: true
     
     attr_accessible :name

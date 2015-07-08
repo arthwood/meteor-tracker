@@ -1,3 +1,4 @@
+require 'action_controller'
 require 'factory_girl'
 require 'database_cleaner'
 
@@ -115,4 +116,8 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+end
+
+def simple_auth(user, pass)
+  ActionController::HttpAuthentication::Basic.encode_credentials(user, pass)
 end

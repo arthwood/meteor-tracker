@@ -8,4 +8,9 @@ mode = ENV['mode'] == 'test' ? 'test' : 'development'
 ActiveRecord::Base.establish_connection(configuration[mode])
 
 module MeteorTracker
+  module Api
+  end
+  
+  module Model
+  end
 end

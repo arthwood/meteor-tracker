@@ -1,7 +1,7 @@
 require_relative '../../model/event'
 
 FactoryGirl.define do
-  factory :event, class: MeteorTracker::Event do
+  factory :event, class: MeteorTracker::Model::Event do
     user
     shower
     time Time.new(2015, 5, 2, 23, 8)

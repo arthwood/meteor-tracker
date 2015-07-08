@@ -2,7 +2,7 @@ require 'protected_attributes'
 require_relative 'user'
 
 module MeteorTracker
-  class Event < ActiveRecord::Base
+  class Model::Event < ActiveRecord::Base
     DIRS = %w(s sw w nw n ne e se)
     
     validates :time, :ra, :dec, :dir, presence: true

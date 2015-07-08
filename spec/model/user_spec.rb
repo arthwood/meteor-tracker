@@ -1,7 +1,7 @@
 require_relative '../spec_helper'
 require_relative '../../model/user'
 
-describe MeteorTracker::User do
+describe MeteorTracker::Model::User do
   describe 'associations' do
     it 'should have events association' do
       expect(subject.events).to be_empty

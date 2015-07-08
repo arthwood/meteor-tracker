@@ -4,4 +4,4 @@ require_relative 'api/base'
 
 use ActiveRecord::ConnectionAdapters::ConnectionManagement
 
-run MeteorTracker::API
+run MeteorTracker::Api::Base

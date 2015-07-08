@@ -1,7 +1,7 @@
 require_relative '../spec_helper'
 require_relative '../../model/event'
 
-describe MeteorTracker::Event do
+describe MeteorTracker::Model::Event do
   describe 'associations' do
     subject { create(:event) }
     
