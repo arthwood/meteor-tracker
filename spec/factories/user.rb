@@ -3,13 +3,13 @@ require_relative '../../model/user'
 FactoryGirl.define do
   factory :user, class: MeteorTracker::User do
     login 'user'
-    password 'asdf1234'
+    password 'userpass'
     role 'user'
   end
   
   factory :admin, class: MeteorTracker::User do
     login 'admin'
-    password 'asdf1234'
+    password 'adminpass'
     role 'admin'
   end
 end

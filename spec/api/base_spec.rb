@@ -47,7 +47,7 @@ describe MeteorTracker::API do
     context 'autorized' do
       let!(:user) { create(:user) }
       let(:env) do
-        {HTTP_AUTHORIZATION: simple_auth(user.login, 'asdf1234')}.as_json
+        {HTTP_AUTHORIZATION: simple_auth(user.login, attributes_for(:user)[:password])}.as_json
       end
       
       context 'invalid data' do
