@@ -20,6 +20,10 @@ module MeteorTracker
       self.password_hash = @password
     end
     
+    def admin?
+      role == 'admin'
+    end
+    
     def self.authenticate(login, password, role = nil)
       user = where(login: login).first
       

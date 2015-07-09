@@ -86,4 +86,22 @@ describe MeteorTracker::Model::User do
       end
     end
   end
+  
+  describe '#admin?' do
+    context 'when admin' do
+      let(:user) { build(:admin) }
+      
+      it 'should return true' do
+        expect(user.admin?).to eq(true)
+      end
+    end
+    
+    context 'when user' do
+      let(:user) { build(:user) }
+      
+      it 'should return false' do
+        expect(user.admin?).to eq(false)
+      end
+    end
+  end
 end

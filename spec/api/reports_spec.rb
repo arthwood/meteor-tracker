@@ -11,7 +11,11 @@ module MeteorTracker
     def app
       described_class
     end
-  
+    
+    def env_for(user, factory)
+      {HTTP_AUTHORIZATION: simple_auth(user.login, attributes_for(factory)[:password])}.as_json
+    end
+    
     describe 'POST report' do
       context 'as guest' do
         it 'should fail' do
@@ -22,14 +26,9 @@ module MeteorTracker
       end
       
       context 'as user' do
-        let!(:user) { create(:user) }
-        let(:env) do
-          {HTTP_AUTHORIZATION: simple_auth(user.login, attributes_for(:user)[:password])}.as_json
-        end
-        
         context 'no data' do
           it 'should fail' do
-            post '/api/reports', nil, env
+            post '/api/reports', nil, env_for(create(:user), :user)
    
             expect(last_response.status).to eq(400)
           end
@@ -49,7 +48,7 @@ module MeteorTracker
           end
           
           it 'should fail' do
-            post '/api/reports', data, env
+            post '/api/reports', data, env_for(create(:user), :user)
    
             expect(last_response.status).to eq(400)
           end
@@ -68,7 +67,7 @@ module MeteorTracker
           end
           
           it 'should succeed' do
-            post '/api/reports', data, env
+            post '/api/reports', data, env_for(create(:user), :user)
             
             time = Time.use_zone(ActiveSupport::TimeZone.new('UTC')) do
               Time.zone.parse(data[:time])
@@ -83,7 +82,7 @@ module MeteorTracker
     end
     
     describe 'PUT report' do
-      let!(:event) { create(:event) }
+      let(:event) { create(:event) }
       
       context 'as guest' do
         it 'should fail' do
@@ -94,17 +93,25 @@ module MeteorTracker
       end
       
       context 'as user' do
-        let(:env) do
-          {HTTP_AUTHORIZATION: simple_auth(user.login, attributes_for(:user)[:password])}.as_json
-        end
-        
         context 'not an owner' do
-          let(:user) { create(:user, login: 'other user') }
+          context 'other user' do
+            let(:user) { create(:user, login: 'other user') }
+            
+            it 'should fail' do
+              put "/api/reports/#{event.id}", nil, env_for(user, :user)
+              
+              expect(last_response.status).to eq(404)
+            end
+          end
           
-          it 'should fail' do
-            put "/api/reports/#{event.id}", nil, env
-   
-            expect(last_response.status).to eq(404)
+          context 'admin' do
+            let(:user) { create(:admin) }
+            
+            it 'should succeed' do
+              put "/api/reports/#{event.id}", nil, env_for(user, :admin)
+              
+              expect(last_response.status).to eq(200)
+            end
           end
         end
         
@@ -113,7 +120,7 @@ module MeteorTracker
           
           context 'invalid data' do
             it 'should fail' do
-              put "/api/reports/#{event.id}", {shower_id: 99}, env
+              put "/api/reports/#{event.id}", {shower_id: 99}, env_for(user, :user)
      
               expect(last_response.status).to eq(400)
             end
@@ -123,7 +130,7 @@ module MeteorTracker
             let(:shower) { create(:shower, name: 'unicornids') }
             
             it 'should succeed' do
-              put "/api/reports/#{event.id}", {shower_id: shower.id}, env
+              put "/api/reports/#{event.id}", {shower_id: shower.id}, env_for(user, :user)
      
               expect(last_response.status).to eq(200)
             end
@@ -144,17 +151,25 @@ module MeteorTracker
       end
       
       context 'as user' do
-        let(:env) do
-          {HTTP_AUTHORIZATION: simple_auth(user.login, attributes_for(:user)[:password])}.as_json
-        end
-        
         context 'not an owner' do
-          let(:user) { create(:user, login: 'other user') }
+          context 'other user' do
+            let(:user) { create(:user, login: 'other user') }
+
+            it 'should fail' do
+              delete "/api/reports/#{event.id}", nil, env_for(user, :user)
+
+              expect(last_response.status).to eq(404)
+            end
+          end
           
-          it 'should fail' do
-            delete "/api/reports/#{event.id}", nil, env
-   
-            expect(last_response.status).to eq(404)
+          context 'admin' do
+            let(:user) { create(:admin) }
+            
+            it 'should succeed' do
+              delete "/api/reports/#{event.id}", nil, env_for(user, :admin)
+              
+              expect(last_response.status).to eq(200)
+            end
           end
         end
         
@@ -162,7 +177,7 @@ module MeteorTracker
           let(:user) { event.user }
           
           it 'should succeed' do
-            delete "/api/reports/#{event.id}", nil, env
+            delete "/api/reports/#{event.id}", nil, env_for(user, :user)
    
             expect(last_response.status).to eq(200)
           end

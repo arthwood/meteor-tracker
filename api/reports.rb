@@ -8,6 +8,12 @@ module MeteorTracker
     format :json
     prefix :api
     
+    helpers do
+      def events_scope
+        @current_user.admin? ? Model::Event : @current_user.events
+      end
+    end
+    
     resource :reports do
       http_basic do |login, password|
         @current_user = Model::User.authenticate(login, password)
@@ -54,9 +60,8 @@ module MeteorTracker
       put ':id', requirements: { id: /[0-9]*/ } do
         begin
           data = declared(params, include_missing: false)
-          resource = @current_user.events.find(params[:id])
-          
           data = data.merge(data.delete(:coords))
+          resource = events_scope.find(params[:id])
           
           unless resource.update(data)
             error! resource.errors.as_json, 400
@@ -69,7 +74,7 @@ module MeteorTracker
       desc 'Deletes meteor event'
       delete ':id', requirements: { id: /[0-9]*/ } do
         begin
-          resource = @current_user.events.find(params[:id])
+          resource = events_scope.find(params[:id])
           
           resource.destroy
         rescue ActiveRecord::RecordNotFound
