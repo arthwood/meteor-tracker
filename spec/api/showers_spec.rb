@@ -58,11 +58,22 @@ module MeteorTracker
           {HTTP_AUTHORIZATION: simple_auth(admin.login, attributes_for(:admin)[:password])}.as_json
         end
         
-        context 'invalid data' do
+        context 'no data' do
           it 'should fail' do
             post '/api/showers', nil, env
-            
+
             expect(last_response.status).to eq(400)
+          end
+        end
+        
+        context 'invalid data' do
+          let!(:shower) { create(:shower) }
+          
+          it 'should fail' do
+            post '/api/showers', {name: shower.name}, env
+
+            expect(last_response.status).to eq(400)
+            expect(JSON.parse(last_response.body)).to eq({name: ['has already been taken']}.as_json)
           end
         end
         

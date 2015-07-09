@@ -28,7 +28,11 @@ module MeteorTracker
         
         resource = Model::Shower.create(data)
         
-        resource.valid? ? resource.id : nil
+        if resource.valid?
+          resource.id
+        else
+          error! resource.errors.as_json, 400
+        end
       end
     end
   end
